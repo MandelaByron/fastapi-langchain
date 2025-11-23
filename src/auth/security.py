@@ -3,7 +3,9 @@
 # And another utility to verify if a received password matches the hash stored.
 
 from pwdlib import PasswordHash
+from fastapi.security import OAuth2PasswordBearer
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="")
 
 password_hash = PasswordHash.recommended()
 
