@@ -1,4 +1,4 @@
-from src.auth.schemas import UserBase
+from src.users.schemas import UserBase
 from sqlmodel import Field
 import uuid
 from datetime import datetime

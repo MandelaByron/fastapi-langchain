@@ -1,11 +1,13 @@
 
 # src.config
 from pydantic import PostgresDsn, RedisDsn, model_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 
 class Config(BaseSettings):
+    
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8',extra='ignore')
     DATABASE_URL: str
 
     # REDIS_URL: RedisDsn
@@ -22,4 +24,4 @@ class Config(BaseSettings):
     # APP_VERSION: str = "1.0"
 
 
-settings = Config(_env_file='dev.env', _env_file_encoding='utf-8')
+settings = Config()
