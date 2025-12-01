@@ -4,10 +4,14 @@ from sqlmodel import SQLModel, Field
 
 
 class PlayersPublic(SQLModel):
-    id: int
-    name: str
-    age : int | None
-    club: str
+    id : int
+    name : str | None = Field(default=None, max_length=255)
+    age : int | None = Field(default=None)
+    club: str = Field(max_length=100)
+    caps: int | None = Field(default=None)
+    main_position: str | None = Field(default=None)
+    international_goals: int | None = Field(default=None)
+    market_value: float | None = Field(default=None)
 
 class ListPlayers(SQLModel):
     count: int
@@ -19,3 +23,5 @@ class FilterParams(SQLModel):
     club: Optional[str] = Field(default=None, max_length=255, description="Club name")
     limit: int = Field(default=100, gt=0, le=100, description="Limit the number of players to return")
 
+class PlayerInput(SQLModel):
+    player_id: int = Field(description="Player ID")

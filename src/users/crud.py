@@ -1,7 +1,7 @@
 
 from sqlmodel import Session, select
 from src.auth.security import get_password_hash, verify_password
-from .models import User
+from src.models import User
 from .schemas import UserCreate, UserUpdate
 
 def create_user(session:Session, user_create: UserCreate) -> User:

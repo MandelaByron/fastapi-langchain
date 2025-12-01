@@ -3,8 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import select
 from .schemas import UserCreate, UserPublic, UsersPublic, UserUpdate, UserUpdateMe, UpdatePassword, UserRegister
+from src.players.schemas import PlayersPublic, ListPlayers, PlayerInput
 from src.schemas import Message
-from src.models import User
+from src.models import User, Players, UserPlayersLink
 from src.dependencies import SessionDep
 from src.auth.security import get_password_hash, verify_password
 from src.users import crud
@@ -105,7 +106,6 @@ def update_user(session: SessionDep, user_id: uuid.UUID ,user_update_data: UserU
     return user
 
 
-
 @router.patch("/update_user/me/password", response_model=Message)
 def update_password_me(session: SessionDep, body: UpdatePassword, current_user: CurrentUserDep):
     
@@ -144,3 +144,42 @@ def delete_user(session: SessionDep, user_id: uuid.UUID):
     session.delete(user)
     session.commit()
     return Message(message="User deleted")
+
+
+@router.post("/add-favorite-player", response_model=PlayersPublic)
+def add_favorite_player(session: SessionDep, current_user: CurrentUserDep, player: PlayerInput):
+    player_obj = session.get(Players, player.player_id)
+
+    if not player_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Player doesn't exist"
+        )
+    existing_favorite = session.get(UserPlayersLink, {"player_id": player_obj.id, "user_id": current_user.id})
+    if existing_favorite:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Player already in favorites"
+        )
+
+    current_user.favorite_players.append(player_obj)
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+    return player_obj
+
+@router.get("/get-favorite-players", response_model=ListPlayers)
+def get_favorite_players(current_user: CurrentUserDep):
+    return ListPlayers(data=current_user.favorite_players, count=len(current_user.favorite_players))
+
+@router.delete("/delete-favorite-player", response_model=Message)
+def delete_favorite_player(session: SessionDep, current_user: CurrentUserDep, player: PlayerInput):
+    player_obj = session.get(Players, player.player_id)
+
+    if not player_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Player doesn't exist"
+        )
+    current_user.favorite_players.remove(player_obj)
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+    return Message(message="Player deleted from favorites")

@@ -14,7 +14,7 @@ class User(UserBase, table=True):
     created_at: datetime = Field(default_factory=datetime.now, description="Creation timestamp")
     updated_at: datetime = Field(default_factory=datetime.now, description="Last update timestamp")
 
-    favorite_players: list["Players"] = Relationship(back_populates="users", link_model=UserPlayersLink)
+    favorite_players: list["Players"] = Relationship(back_populates="fans", link_model=UserPlayersLink)
 class Players(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True, index=True)
 
@@ -67,4 +67,4 @@ class Players(SQLModel, table=True):
     national_team_stats: dict | None = Field(default=None, sa_column=Column(JSON))
     current_season_stats: dict | None = Field(default=None, sa_column=Column(JSON))
 
-    fans : list["User"] = Relationship(back_populates="players", link_model=UserPlayersLink)
+    fans : list["User"] = Relationship(back_populates="favorite_players", link_model=UserPlayersLink)

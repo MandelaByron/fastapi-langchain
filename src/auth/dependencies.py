@@ -5,13 +5,14 @@ from src.dependencies import SessionDep
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 import jwt
-from src.users.models import User
+from src.models import User
 from .config import auth_settings
+from src.config import settings
 from .schemas import TokenPayload
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/access_token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/access_token")
 
 def get_current_user(session: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     try:
