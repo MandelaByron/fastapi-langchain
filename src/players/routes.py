@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Annotated
 from sqlmodel import select, desc, nulls_last, func
-from src.players.models import Players
+from src.models import Players
 from src.players.schemas import ListPlayers, PlayersPublic, FilterParams
 from src.dependencies import SessionDep
 router = APIRouter(prefix="/players", tags=["players"])

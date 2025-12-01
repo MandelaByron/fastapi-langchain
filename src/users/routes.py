@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import select
 from .schemas import UserCreate, UserPublic, UsersPublic, UserUpdate, UserUpdateMe, UpdatePassword, UserRegister
 from src.schemas import Message
-from .models import User
+from src.models import User
 from src.dependencies import SessionDep
 from src.auth.security import get_password_hash, verify_password
 from src.users import crud

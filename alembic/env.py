@@ -1,3 +1,4 @@
+import imp
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -5,8 +6,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.config import settings
-from src.players.models import Players
-from src.users.models import User
+from src.models import User, UserPlayersLink, Players
 from sqlmodel import SQLModel
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
